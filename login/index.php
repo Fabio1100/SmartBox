@@ -36,7 +36,7 @@
   // Errore durante il login Google
   else if(isset($_SESSION['eccezione_google']) && $_SESSION['eccezione_google']=="SI")
   {
-    $messaggio="<div class='alert alert-danger' role='alert' style='font-size:18px; text-align:center;'><b>Attenzione!</b>Errore durante il login Google, prego ritentare.</div>";
+    $messaggio="<div class='alert alert-danger' role='alert' style='font-size:18px; text-align:center;'><b>Attenzione!</b> Errore durante il login Google, prego ritentare.</div>";
    $_SESSION['errore_google']="NO";
   }
 

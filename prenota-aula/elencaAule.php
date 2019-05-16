@@ -60,10 +60,10 @@
 
 	// Costruzione dell'output
 	if($risultato->num_rows == 0)
-  	echo "<option selected disabled>Nessuna aula disponibile</option>";
+  	echo "<option value='' selected disabled>Nessuna aula disponibile</option>";
 	else
 	{
-		echo "<option selected disabled>Seleziona un'aula</option>";
+		echo "<option value='' selected disabled>Seleziona un'aula</option>";
 		// Ciclo sulle aule disponibili
 	  while($aula = $risultato->fetch_assoc())
 		{
@@ -72,7 +72,7 @@
 
 			// Costruzione della query per controllare che non ci siano altre prenotazioni per l'aula
 			$query="SELECT count(id) as conta FROM richieste
-	        		WHERE ora_inizio<'$orafine' and ora_fine>'$orainizio' and data='$data' and idAula='" .$aula['id'] . "'";
+	        		WHERE ora_inizio < '$orafine' AND ora_fine > '$orainizio' AND data = '$data' AND idAula='" .$aula['id'] . "'";
 			// Esecuzione della query
 			$ris=$conn->query($query);
 

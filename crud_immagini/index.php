@@ -10,6 +10,11 @@
     header("location: ../logout.php");
     die();
   }
+
+  function isMobileDevice()
+  {
+    return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
+  }
 ?>
 <!DOCTYPE html>
 <html lang="it">
@@ -129,7 +134,12 @@
   <!-- Page Wrapper -->
   <div id="wrapper">
   <!-- Sidebar -->
-  <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+  <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion
+    <?
+      if(isMobileDevice())
+        echo 'toggled'
+    ?>
+  " id="accordionSidebar">
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="./">
       <div class="sidebar-brand-text mx-3">Smart Box</div>
     </a>
@@ -345,7 +355,8 @@
                     <input name="id_aula" style="display:none;" value="<? echo $id ?>"></input>
                     <!-- Salva le modifiche -->
                     <input type="button" class="btn btn-primary" name="bottone" onclick="aggiorna(this.id)" id = "<? echo $conta ?>" value="Salva">
-                    <div class="alert alert-success" role="alert" style="margin-top: 10px; font-size:17px;" name="banner">
+                    <!-- Banner errori/comunicazioni -->
+                    <div class="alert alert-success" role="alert" style="display:none; margin-top: 10px; font-size:17px;" name="banner">
                       Dati dell'aula aggiornati con successo
                     </div>
                   </div>

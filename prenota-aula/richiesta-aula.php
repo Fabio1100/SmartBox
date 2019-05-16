@@ -52,6 +52,8 @@
     $orafine=mysqli_real_escape_string($conn,$_POST['orafine']).":00";
     // Aula scelta
     $idAula=mysqli_real_escape_string($conn,$_POST['aula']);
+    // Numero di posti prenotati
+    $posti=mysqli_real_escape_string($conn,$_POST['numero_posti']);
     // Id utente (Dalla sessione)
     $idUtente=$_SESSION['idUtente'];
 
@@ -72,7 +74,9 @@
       if($risu->num_rows==0)
       {
         // Query per inserire la prenotazione nel Database
-        $queryInserimento="INSERT INTO richieste (data,ora_inizio,ora_fine,idUtente,idAula) VALUES ('$giorno','$orainizio','$orafine','$idUtente','$idAula')";
+        $queryInserimento="INSERT INTO richieste (data,ora_inizio,ora_fine,idUtente,idAula, posti)
+                           VALUES ('$giorno','$orainizio','$orafine','$idUtente','$idAula', $posti)
+                          ";
         $risultato=$conn->query($queryInserimento);
 
         // Banner che comunicano la riuscita o meno dell'operazione

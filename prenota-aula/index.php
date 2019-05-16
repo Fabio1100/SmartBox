@@ -6,12 +6,14 @@
 
   // Recupero dei dati se la prenotazione
   // arriva dalla homepage
-
   // Aula selezionata
   $set_aula="0";
+  $funzione = "";
   if(isset($_GET['aula']))
+  {
     $set_aula = $_GET['aula'];
-
+    $funzione = " posti();";
+  }
   // Orario selezionato
   $set_ora='-1';
   if(isset($_GET['ora']))
@@ -35,9 +37,10 @@
     $inizio=8;
     $fine=18;
 
-    echo '<select class="form-control" id="' . $id  . '" name="' . $id . '" required onchange="caricaAule()">';
+    // Combobox per la scelta dell'orario di inizio o fine della prenotazione
+    echo '<select class="form-control" id="' . $id  . '" name="' . $id . '" required onchange="caricaAule(); posti();">';
     // Se devo popolare l'orario finale o iniziale
-    if($tipo==1)
+    if($tipo == 1)
       echo "<option value='' selected disabled>Seleziona l'orario di fine</option>";
     else
       echo "<option value='' selected disabled>Seleziona l'orario d'inizio</option>";
@@ -47,29 +50,35 @@
     {
       $ora=$i . ":00";
       // Se l'orario è quello scelto nella homepage
-      if(($i==$set_ora && $id=="orainizio") || ($i==($set_ora+1) && $id=="orafine"))
-        // Lo selezionato
+      if(($i == $set_ora && $id == "orainizio") || ($i == ($set_ora+1) && $id == "orafine"))
+        // Lo imposto come selezionato
         echo '<option value="' . $ora . '" selected>' . $ora . '</option>';
       else
         echo '<option value="' . $ora . '">' . $ora . '</option>';
     }
     echo "</select>";
+
   }
 
-    // Tiro fuori quante ore al massimo posso prenotare
-    $oreLettere = array("un'ora", "due ore", "tre ore","quattro ore","cinque ore","sei ore");
-    $query="SELECT valore FROM parametri WHERE descrizione='massimoOre'";
-    $risu=$conn->query($query);
-    $tutto=$risu->fetch_assoc();
-    $maxOre=$tutto['valore'];
+  // Recupero quante ore al massimo posso prenotare
+  $oreLettere = array("un'ora", "due ore", "tre ore","quattro ore","cinque ore","sei ore");
+  $query="SELECT valore FROM parametri WHERE descrizione='massimoOre'";
+  $risu=$conn->query($query);
+  $tutto=$risu->fetch_assoc();
+  $maxOre=$tutto['valore'];
 
-    $divoRichiesta="";
-    // Inserisco il messaggio da mostrare (Banner)
-    if(isset($_SESSION['inserimentoRichiesta'])&&$_SESSION['inserimentoRichiesta']!="")
-    {
-      $divoRichiesta=$_SESSION['inserimentoRichiesta'];
-      $_SESSION['inserimentoRichiesta']="";
-    }
+  $divoRichiesta="";
+  // Inserisco il messaggio da mostrare (Banner)
+  if(isset($_SESSION['inserimentoRichiesta'])&&$_SESSION['inserimentoRichiesta']!="")
+  {
+    $divoRichiesta=$_SESSION['inserimentoRichiesta'];
+    $_SESSION['inserimentoRichiesta']="";
+  }
+
+  function isMobileDevice()
+  {
+    return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
+  }
 ?>
 <!DOCTYPE html>
 <html lang="it">
@@ -90,7 +99,7 @@
   <link href="../css/sb-admin-2.min.css" rel="stylesheet">
 
   <script>
-  // Funzioni per Ajax
+  // Funzioni per le operazioni Ajax
   var req;
 
   function loadPage(url, postvalue)
@@ -140,7 +149,6 @@
     }
     return req;
   }
-  //
 
   // Recupero le aule disponibili nella data e nelle ore indicate
   function caricaAule()
@@ -235,9 +243,9 @@
       document.getElementById('aula_non_selezionata').style.display="block";
       valido=false;
     }
+
     // Se non ci sono errori eseguo il submit
-    if(valido)
-      document.getElementById("invia").click();
+    return valido;
   }
 
   function carica_data()
@@ -245,18 +253,40 @@
     // Inserisco la data scelta nell'homepage
     var data = '<? echo $set_data; ?>';
 
-    if(data!='0')
+    if(data != '0')
       document.getElementById('inputGiorno').value = data;
+  }
+
+  function posti()
+  {
+    var data = document.getElementById("inputGiorno").value;
+    var orai = document.getElementById("orainizio").value;
+    var oraf = document.getElementById("orafine").value;
+    var aula = document.getElementById("inputAula").value;
+
+    if(data != "" && orai != "" && oraf != "" && aula != "")
+    {
+      // Chiamata alla pagina php per ottenere il risultato Ajax
+      loadPage("conta_posti.php?data="+data+"&orainizio="+orai+"&orafine="+oraf+"&aula="+ aula,"");
+
+      // Risposta della pagina
+      document.getElementById('inputPosti').innerHTML = req.responseText;
+    }
   }
   </script>
 </head>
 
-<body id="page-top" onload="carica_data(); caricaAule();">
+<body id="page-top" onload="carica_data(); caricaAule(); <? echo $funzione ?>">
 
   <!-- Page Wrapper -->
   <div id="wrapper">
     <!-- Menù laterale -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion
+      <?
+        if(isMobileDevice())
+          echo 'toggled'
+      ?>
+    " id="accordionSidebar">
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="./">
         <div class="sidebar-brand-text mx-3">Smart Box</div>
       </a>
@@ -289,7 +319,7 @@
           <i class="fas fa-fw fa-table"></i>
           <span>Storico richieste</span></a>
       </li>
-      <!-- Parte per l'Admin -->
+      <!-- Parte del menù riservata all'Admin -->
       <?php
         if($potere=='2')
         {
@@ -380,34 +410,57 @@
                   <h6 class="font-weight-bold text-primary" style="margin:auto;">Prenota aula</h6>
                 </div>
                 <div class="card-body">
-                  <form action="richiesta-aula.php" method="post">
+                  <!-- Form per richiedere un'aula -->
+                  <form action="richiesta-aula.php" method="post" onsubmit="return controlla()">
+                    <!-- Data della prenotazione -->
                     <div class="form-group row">
                       <label for="inputGiorno" class="offset-md-1 col-md-3 col-form-label">Giorno </label>
                       <div class="col-md-7">
-                        <input type="date" class="form-control" id="inputGiorno" name="giorno" value="<?php echo $dopodomani ?>" min="<?php echo $dopodomani ?>" required onchange='caricaAule()'>
+                        <input type="date" class="form-control" id="inputGiorno" name="giorno" value="<?php echo $dopodomani ?>" min="<?php echo $dopodomani ?>" required onchange='caricaAule(); posti();'>
                       </div>
                     </div>
+                    <!-- Ora di inizio della prenotazione -->
                     <div class="form-group row">
                       <label for="orainizio" class="offset-md-1 col-md-3 col-form-label">Ora di inizio </label>
                       <div class="col-md-7">
                         <?php scrivi_lista("orainizio",0) ?>
                       </div>
                     </div>
+                    <!-- Ora di fine della prenotazione -->
                     <div class="form-group row">
                       <label for="orafine" class="offset-md-1 col-md-3 col-form-label">Ora di fine </label>
                       <div class="col-md-7">
                         <?php scrivi_lista("orafine",1) ?>
                       </div>
                     </div>
+                    <!-- Aula da prenotare -->
                     <div class="form-group row">
                       <label for="inputAula" class="offset-md-1 col-md-3 col-form-label">Aula </label>
                       <div class="col-md-7">
-                        <select class="form-control" name="aula" id="inputAula" required>
-                          <option selected disabled>Seleziona la data e gli orari</option>
+                        <select class="form-control" name="aula" id="inputAula" onchange="posti();" required>
+                          <option value='' selected disabled>Seleziona la data e gli orari</option>
                         </select>
                       </div>
                     </div>
+                    <!-- Seleziona più posti -->
+                    <?
+                    // Se l'utente è un docente
+                    if($potere == 1)
+                    {
+                    ?>
+                    <div class="form-group row">
+                      <label for="inputPosti" class="offset-md-1 col-md-3 col-form-label">Numero di posti</label>
+                      <div class="col-md-7">
+                        <select class="form-control" name="numero_posti" id="inputPosti" required>
+                          <option selected disabled>Seleziona quanti posti prenotare</option>
+                        </select>
+                      </div>
+                    </div>
+                    <?
+                    }
+                    ?>
 
+                    <!-- Serie di banner per le comunicazioni/errori -->
                     <div id="segnalazioni" style="margin:auto; margin-top:15px; margin-bottom:15px; width: 90%;">
                       <?php echo $divoRichiesta ?>
                       <div class="alert alert-danger text-center" id="orario_inizio_non_selezionato" style="display: none" role="alert">
@@ -430,8 +483,10 @@
                       </div>
                     </div>
 
-                    <input type="submit" hidden name="submit" id="invia"/>
-                    <center><button type="button" onclick="controlla()" class="btn btn-primary">Richiedi aula</button></center>
+                    <!-- Bottone per confermare la prenotazione -->
+                    <center>
+                      <button type="submit" class="btn btn-primary">Richiedi aula</button>
+                    </center>
                   </form>
                 </div>
               </div>

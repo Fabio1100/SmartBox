@@ -74,6 +74,11 @@
     $messaggio="<div class='alert alert-success' role='alert' style='font-size:18px; text-align:center;'>Email per il ripristino della password inviata. </div>";
     $_SESSION['email_inviata']="NO";
   }
+
+  function isMobileDevice()
+  {
+    return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
+  }
 ?>
 <!DOCTYPE html>
 <html lang="it">
@@ -124,7 +129,12 @@
   <!-- Page Wrapper -->
   <div id="wrapper">
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion
+      <?
+        if(isMobileDevice())
+          echo 'toggled'
+      ?>
+    " id="accordionSidebar">
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="./">
         <div class="sidebar-brand-text mx-3">Smart Box</div>
       </a>
@@ -376,7 +386,9 @@
                             }
                             else
                             {
-                              $query="SELECT count(id) as conta FROM richieste WHERE ora_inizio<'$orafine' and ora_fine>'$orainizio' and data='$data' and idAula='" .$idAula[$sing] . "'";
+                              $query="SELECT SUM(posti) as conta
+                                      FROM richieste
+                                      WHERE ora_inizio < '$orafine' AND ora_fine > '$orainizio' AND data = '$data' AND idAula=" . $idAula[$sing];
                               $singolaQuery=$conn->query($query);
                               $tutto=$singolaQuery->fetch_assoc();
                               $postiDispo=$tutto['conta'];

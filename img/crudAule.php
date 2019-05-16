@@ -8,6 +8,10 @@
       die();
    }
 
+   function isMobileDevice()
+   {
+     return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
+   }
 ?>
 <!DOCTYPE html>
 <html lang="it">
@@ -36,7 +40,12 @@
   <!-- Page Wrapper -->
   <div id="wrapper">
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion
+      <?
+        if(isMobileDevice())
+          echo 'toggled'
+      ?>
+    " id="accordionSidebar">
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="./">
         <div class="sidebar-brand-text mx-3">Smart Box</div>
       </a>
