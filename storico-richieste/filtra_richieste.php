@@ -29,7 +29,7 @@
     $tutte = $_GET['tutte'];
 
   // Query per filtrare le richieste
-  $query = "SELECT richieste.data AS data, richieste.ora_inizio AS inizio, richieste.ora_fine AS fine, aule.nome AS aula";
+  $query = "SELECT richieste.id as id, richieste.data AS data, richieste.ora_inizio AS inizio, richieste.ora_fine AS fine, aule.nome AS aula";
 
   // Aggiungo il tipo di utente che ha prenotato
   // se la richiesta è fatta da un admin
@@ -112,6 +112,7 @@
           <th>Ora Inizio</th>
           <th>Ora Fine</th>
           <th>Aula</th>
+          <th>Elimina</th>
          ";
    // Se la richiesta viene fatta da un admin
    if($potere == 2)
@@ -139,6 +140,16 @@
       echo "<td>" . date("H:i",strtotime($riga['fine'])) . "</td>";
       // Aula prenotata
       echo "<td>" . $riga['aula'] . "</td>";
+      // Bottone per eliminare la richiesta
+      echo "<td>";
+
+      if(date("Y-m-d") < $riga['data'])
+        // Inserisco il bottone per cancellare la sospensione
+        echo '<button type="button" class="btn btn-danger" id="cancella" value="' . $riga['id'] . '|' . $riga['data'] . '" onclick="cancella_richiesta(this.value);">x</button>';
+      else
+        echo "/";
+
+      echo "</td>";
       // Se la richiesta viene fatta da un admin
       if($potere == 2)
       {

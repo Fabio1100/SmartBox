@@ -109,7 +109,35 @@
       // Riporto i risultati nella tabella
       tabella.innerHTML=req.responseText;
     }
+
+    // Funzione per cancellare una richiesta
+    function cancella_richiesta(dati_aula)
+    {
+      // Recupero dal parametro l'Id dell'aula e la data di inizio della sospensione
+      var id_aula = dati_aula.split("|")[0];
+      var data = dati_aula.split("|")[1];
+
+      // Chiamata Ajax
+      loadPage("elimina_richiesta.php?id="+id_aula+"&data="+data,"");
+
+      // Se va tutto bene
+      if(req.responseText == "OK")
+        // Mostro il banner che comuninca l'avvenuta cancellazione della sospensione
+        document.getElementById('banner_2').style.display = "block";
+
+      // Aggiorno le sospensioni mostrate in tabella
+      filtra();
+    }
   </script>
+  <style>
+  	#cancella
+    {
+      font-weight: bold;
+      height: 25px;
+      width: 25px;
+      padding: 0;
+	}
+  </style>
 </head>
 
 <body id="page-top">
@@ -241,24 +269,22 @@
           <div class="row">
             <div class="container">
               <center>
-                <!-- Bottoni per selezionare le sospensioni in corso/future o anche quelle passate  -->
-                <div class="btn-group" role="group">
-                  <button type='button' class="btn btn-primary" onclick="tutte = 1; filtra();">Tutte</button>
-                  <button type='button' class="btn btn-success" onclick="tutte = 0; filtra();">In corso</button>
-                </div>
+
                 <br><br>
                 <!-- Parte per filtrare le richieste riservata agli admin -->
                 <?php
                   if($potere=='2')
                   {
                 ?>
-                <form class="form-inline" id="miaForm">
+                <form class="form-row" id="miaForm">
                   <!-- Data per filtrare le richieste -->
                 	<div class="form-group">
+                    <label for="dataFiltro" style="font-weight:bold;">Data</label>
                 		<input class="form-control" type="date" id='dataFiltro' name="dataFiltro" onchange="filtra()" value="-1">
                   </div>
                   <!-- Aula per filtrare le richieste -->
-                	<div class="form-group">
+                	<div class="form-group" style="margin-left:10px;">
+                    <label for="aulaFiltro" style="font-weight:bold;">Aula</label>
                     <select name="aulaFiltro" id="aulaFiltro" class="form-control" onchange="filtra()">
                       <option value='-1'>Tutte</option>
                         <?php
@@ -269,19 +295,33 @@
                     </select>
                 	</div>
                     <!-- Tipi di utenti per filtrare le richieste -->
-                    <div class="form-group">
+                    <div class="form-group" style="margin-left:10px;">
+                      <label for="personeFiltro" style="font-weight:bold;">Tipo Utente</label>
                   		<select name="personeFiltro" id="personeFiltro" class="form-control" onchange="filtra()">
                         <option selected value='-1'>Tutti</option>
                         <option value='1'>Docenti</option>
                         <option value='0'>Studenti</option>
                       <select>
                   	</div>
-                </form>
                 <?
                   }
                 ?>
+                <div class="form-group" style="margin-left:10px;">
+                  <label style="font-weight:bold;">Tipo di sospensione</label>
+                  <!-- Bottoni per selezionare le sospensioni in corso/future o anche quelle passate  -->
+                  <div class="btn-group form-control" role="group" style="padding:0px;">
+                    <button type='button' class="btn btn-primary" onclick="tutte = 1; filtra();">Tutte</button>
+                    <button type='button' class="btn btn-success" onclick="tutte = 0; filtra();">In corso</button>
+                  </div>
+                </div>
+              </form>
               </center>
               <br>
+              <center>
+                <div class="alert alert-success" role="alert" id="banner_2" style="margin-top: 15px; font-size:18px; display: none;">
+                  La richiesta è stata eliminata con successo
+                </div>
+              </center>
               <div class="card">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="font-weight-bold text-primary" style="margin:auto;">Storico richieste</h6>

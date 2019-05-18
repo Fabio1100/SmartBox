@@ -223,7 +223,7 @@
             </div>
             <div class="container card" style="padding-top:15px; padding-bottom:15px;">
               <!-- Tabella con tutte le aule -->
-              <table class="table table-striped">
+              <table class="table table-striped table-responsive">
                 <!-- Intestazione tabella -->
                 <thead>
                   <tr>
@@ -231,6 +231,7 @@
                     <th>Descrizione</th>
                     <th>Capienza</th>
                     <th>Note</th>
+                    <th>Motivazione</th>
                     <th>Sospendi</th>
                   </tr>
                 </thead>
@@ -251,11 +252,12 @@
                       <input type="hidden" name="id" id="id" value="<?=$id?>"/>
                       <!-- Stampo la riga con i dati per ogni aula -->
                       <tr>
-                        <td width="25%"><?=$riga['nome'] ?></td>
-                        <td width="35%"><?=$riga['descrizione'] ?></td>
-                        <td width="10%"><?=$riga['numeroPosti'] ?></td>
-                        <td width="20%"><?=$riga['note'] ?></td>
-                        <td width="10%"><button type="submit" class="btn btn-warning" name="bottone" value="<? echo $id; ?>">Sospendi</button></td>
+                        <td style="width=15%;"><?=$riga['nome'] ?></td>
+                        <td style="width=20%;"><?=$riga['descrizione'] ?></td>
+                        <td style="width=10%;"><?=$riga['numeroPosti'] ?></td>
+                        <td style="width=20%;"><?=$riga['note'] ?></td>
+                        <td style="width=20%;"><textarea type="text" class="form-control" name="motivo_<?=$id ?>" placeholder="Inserisci motivazione"></textarea></td>
+                        <td style="width=15%;"><button type="submit" class="btn btn-warning" name="bottone" value="<? echo $id; ?>">Sospendi</button></td>
                       </tr>
                       <?php
                   }

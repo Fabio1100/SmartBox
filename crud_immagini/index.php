@@ -330,7 +330,8 @@
                 <hr>
                 <!-- Modifica dati Aula -->
                 <center>
-                  <div class="col-8">
+                  <div class="col-10">
+                  <!-- <div> -->
                     <!-- Nome Aula -->
                     <div class="form-group">
                       <label for="nome" style="font-weight:bold; font-size:17px;">Nome Aula</label>
@@ -373,7 +374,7 @@
             </form>
 
             <!-- Tabella Aula - Immagini -->
-            <table class="table table-bordered">
+            <table class="table table-bordered table-responsive">
               <!-- Intestazione Tabella -->
               <thead>
                 <tr>

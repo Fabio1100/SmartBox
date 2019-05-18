@@ -71,7 +71,7 @@
 			$numeroPosti=$aula['numeroPosti'];
 
 			// Costruzione della query per controllare che non ci siano altre prenotazioni per l'aula
-			$query="SELECT count(id) as conta FROM richieste
+			$query="SELECT SUM(posti) as conta FROM richieste
 	        		WHERE ora_inizio < '$orafine' AND ora_fine > '$orainizio' AND data = '$data' AND idAula='" .$aula['id'] . "'";
 			// Esecuzione della query
 			$ris=$conn->query($query);

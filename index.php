@@ -348,16 +348,22 @@
                               $singolaQuery=$conn->query($query);
                               $elencoPersone="<i class='fas fa-users' tabindex='0' data-trigger='focus' data-html='true' data-toggle='popover' style='margin-left:3px;' title='Elenco delle persone' data-content='";
 
-                              $postiDispo=0;
                               while($rigo=$singolaQuery->fetch_assoc())
                               {
-                                $postiDispo++;
                                 $elencoPersone.=$rigo['cognome']. " " . $rigo['nome'];
                                 if($rigo['classe']!="")
                                   $elencoPersone.=" (".$rigo['classe'].")";
                                 $elencoPersone.="<br>";
                               }
                               $elencoPersone.="'></i>";
+                              $query="SELECT SUM(posti) as conta
+                                      FROM richieste
+                                      WHERE ora_inizio < '$orafine' AND ora_fine > '$orainizio' AND data = '$data' AND idAula=" . $idAula[$sing];
+
+                              $singolaQuery=$conn->query($query);
+                              $tutto=$singolaQuery->fetch_assoc();
+                              $postiDispo=$tutto['conta'];
+
                               $percentuale=($postiDispo / $postiAule[$sing])*100;
                               $postiD=$postiAule[$sing]-$postiDispo;
                               if($percentuale==0)

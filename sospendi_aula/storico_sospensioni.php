@@ -289,17 +289,20 @@
               <center>
                 <br><br>
                 <!-- Form per filtrare le sospensioni -->
-                <form class="form-inline" id="miaForm">
+                <form class="form-row" id="miaForm">
                   <!-- Data di inizio del filtro -->
                 	<div class="form-group">
-                  		<input class="form-control" type="date" id='dataFiltroI' name="dataFiltroI" onchange="filtra()" value="">
+                    <label for="dataFiltroI" style="font-weight:bold;">Data di inizio</label>
+                		<input class="form-control" type="date" id='dataFiltroI' name="dataFiltroI" onchange="filtra()" value="">
                   </div>
                   <!-- Data di fine del filtro -->
-                  <div class="form-group">
-                      <input class="form-control" type="date" id='dataFiltroF' name="dataFiltroF" onchange="filtra()" value="">
+                  <div class="form-group" style="margin-left:10px;">
+                    <label for="dataFiltroF" style="font-weight:bold;">Data di fine</label>
+                    <input class="form-control" type="date" id='dataFiltroF' name="dataFiltroF" onchange="filtra()" value="">
                   </div>
                   <!-- Sospensione per solo un'aula -->
-                	<div class="form-group">
+                	<div class="form-group" style="margin-left:10px;">
+                    <label for="aulaFiltro" style="font-weight:bold;">Aula</label>
                     <select name="aulaFiltro" id="aulaFiltro" class="form-control" onchange="filtra()">
                       <option value='-1'>Tutte</option>
                       <?php
@@ -313,15 +316,16 @@
                         }
                       ?>
                     </select>
-                	</div>
+                  </div>
                   <div class="form-group" style="margin-left:10px;">
+                    <label style="font-weight:bold;">Tipo sospensione</label>
                     <!-- Bottoni per selezionare le sospensioni in corso/future o anche quelle passate  -->
-                    <div class="btn-group" role="group">
+                    <div class="btn-group form-control" role="group" style="padding:0px;">
                       <button type='button' class="btn btn-primary" onclick="tutte=true; filtra();">Tutte</button>
                       <button type='button' class="btn btn-success" onclick="tutte=false; filtra();">In corso</button>
                     </div>
                   </div>
-              </form>
+                </form>
               </center>
               <br>
               <div class="card">

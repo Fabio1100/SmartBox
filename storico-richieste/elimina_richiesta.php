@@ -12,11 +12,11 @@
 
   // Data di inizio della sospensione
   if(isset($_GET['data']))
-    $datai = $_GET['data'];
+    $data = $_GET['data'];
 
   // Costruisco la query per eliminare la sospensione
-  $query="DELETE FROM sospendiAula
-          WHERE idAula = $id_aula AND sospendiDa = '$datai'";
+  $query="DELETE FROM richieste
+          WHERE id = $id_aula AND data = '$data'";
 
   // Esecuzione query
   if($conn->query($query))

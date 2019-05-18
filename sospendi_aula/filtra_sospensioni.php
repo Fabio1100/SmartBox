@@ -27,7 +27,8 @@
   //
 
   // Base
-  $query="SELECT aule.nome AS nomeAula, sospendiAula.idAula AS id, sospendiAula.sospendiDa AS inizio, sospendiAula.sospendiA AS fine FROM sospendiAula
+  $query="SELECT aule.nome AS nomeAula, sospendiAula.idAula AS id, sospendiAula.sospendiDa AS inizio, sospendiAula.sospendiA AS fine, sospendiAula.motivazione AS motivo
+          FROM sospendiAula
           INNER JOIN aule on aule.id=idAula
          ";
 
@@ -72,6 +73,7 @@
           <th>Data inizio</th>
           <th>Data Fine</th>
           <th>Aula</th>
+          <th>Motivazione</th>
           <th>Elimina</th>
           </tr>
         ";
@@ -88,13 +90,18 @@
       echo "<td>" . date("d-m-Y",strtotime($riga['inizio'])). "</td>";
       // Data di fine sospensione
       echo "<td>" . date("d-m-Y",strtotime($riga['fine'])). "</td>";
-      // Nome aul sospesa
+      // Nome aula sospesa
       echo "<td>" . ucwords(strtolower($riga['nomeAula'])) . "</td>";
+      // Motivo sospensione
+      echo "<td>" . ucwords(strtolower($riga['motivo'])) . "</td>";
+      // Pulsante per eliminare la sospensione
       echo "<td>";
       // Se la sospensione è in corso o deve ancora cominciare
       if($oggi < $riga['fine'])
         // Inserisco il bottone per cancellare la sospensione
         echo '<button type="button" class="btn btn-danger" id="cancella" value="' . $riga['id'] . '|' . $riga['inizio'] . '" onclick="cancella_sospensione(this.value);">x</button>';
+      else
+        echo "/";
       echo "</td>";
       echo "</tr>";
       $i++;

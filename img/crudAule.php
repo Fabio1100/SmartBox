@@ -161,7 +161,7 @@
           </div>
 
           <div class="container card" style="padding-top:15px; padding-bottom:15px;">
-            <table class="table table-striped">
+            <table class="table table-striped table-responsive">
               <thead>
                 <tr>
                   <th>Nome Aula</th>

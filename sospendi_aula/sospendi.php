@@ -12,9 +12,15 @@
   if(isset($_POST['inputA']))
     $A = $_POST['inputA'];
 
-  // Flag Tutte/In corso
+  // Id aula da sospendere
   if(isset($_POST['bottone']))
     $aula = $_POST['bottone'];
+
+  // Motivo della sospensione
+  if(isset($_POST['motivo_' . $aula]))
+    $motivo = $_POST['motivo_' . $aula];
+
+  //
 
   require '../conn/conn.php';
 
@@ -28,7 +34,8 @@
   if($quanti=="0")
   {
     // Inserisco la sospensione
-    $sql="INSERT INTO sospendiAula (idAula,sospendiDa,sospendiA) VALUES ($aula, '$Da', '$A')";
+    $sql="INSERT INTO sospendiAula (idAula,sospendiDa,sospendiA, motivazione) VALUES ($aula, '$Da', '$A', '$motivo')";
+    echo $sql;
     $ris=$conn->query($sql);
 
     // Estraggo, se ci sono, le prenotazioni per l'aula sospesa
